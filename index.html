@@ -1,0 +1,972 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Match Finder - Dating App</title>
+    <style>
+        /* === Reset & Base Styles === */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f8f9fa;
+            color: #212529;
+            line-height: 1.5;
+        }
+        
+        /* === Layout === */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+            margin: -10px;
+        }
+        
+        .col {
+            flex: 1;
+            padding: 10px;
+            min-width: 300px;
+        }
+        
+        /* === Navigation === */
+        nav {
+            background-color: #ff4081;
+            color: white;
+            padding: 15px 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo i {
+            margin-right: 10px;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 5px 10px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        
+        .nav-links a:hover {
+            background-color: rgba(255,255,255,0.2);
+        }
+        
+        .nav-links a.active {
+            background-color: rgba(255,255,255,0.3);
+        }
+        
+        .user-nav {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .notification-badge {
+            position: relative;
+        }
+        
+        .badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: #dc3545;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 12px;
+        }
+        
+        /* === Cards === */
+        .card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+        
+        .card-header {
+            padding: 15px 20px;
+            border-bottom: 1px solid #e9ecef;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .card-body {
+            padding: 20px;
+        }
+        
+        .card-footer {
+            padding: 15px 20px;
+            border-top: 1px solid #e9ecef;
+            background-color: #f8f9fa;
+        }
+        
+        /* === Forms === */
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+        
+        input, textarea, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: #80bdff;
+            box-shadow: 0 0 0 3px rgba(0,123,255,0.25);
+        }
+        
+        .form-check {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .form-check input {
+            width: auto;
+            margin-right: 10px;
+        }
+        
+        button {
+            background-color: #ff4081;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        
+        button:hover {
+            background-color: #e73371;
+        }
+        
+        button.secondary {
+            background-color: #6c757d;
+        }
+        
+        button.secondary:hover {
+            background-color: #5a6268;
+        }
+        
+        /* === Specific Components === */
+        .profile-card {
+            position: relative;
+            height: 500px;
+            background-size: cover;
+            background-position: center;
+            border-radius: 8px;
+            color: white;
+            overflow: hidden;
+        }
+        
+        .profile-info {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 20px;
+            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+        }
+        
+        .profile-name {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+        
+        .profile-details {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .profile-bio {
+            margin-bottom: 15px;
+        }
+        
+        .action-buttons {
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .action-button {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background-color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #ff4081;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            transition: transform 0.2s;
+        }
+        
+        .action-button:hover {
+            transform: scale(1.1);
+        }
+        
+        .action-button.dislike {
+            color: #dc3545;
+        }
+        
+        .match-item {
+            display: flex;
+            padding: 15px 20px;
+            border-bottom: 1px solid #e9ecef;
+            align-items: center;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .match-item:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .match-photo {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            margin-right: 15px;
+            object-fit: cover;
+        }
+        
+        .match-info {
+            flex: 1;
+        }
+        
+        .match-name {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .match-last-message {
+            color: #6c757d;
+            font-size: 14px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 250px;
+        }
+        
+        .conversation {
+            height: 400px;
+            overflow-y: auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        
+        .message {
+            display: flex;
+            margin-bottom: 15px;
+        }
+        
+        .message.outgoing {
+            justify-content: flex-end;
+        }
+        
+        .message-content {
+            max-width: 70%;
+            padding: 10px 15px;
+            border-radius: 18px;
+        }
+        
+        .message.incoming .message-content {
+            background-color: white;
+            border: 1px solid #e9ecef;
+        }
+        
+        .message.outgoing .message-content {
+            background-color: #ff4081;
+            color: white;
+        }
+        
+        .message-time {
+            font-size: 12px;
+            color: #6c757d;
+            margin-top: 5px;
+            text-align: right;
+        }
+        
+        .message-form {
+            display: flex;
+            gap: 10px;
+            padding: 15px;
+            background-color: white;
+        }
+        
+        .message-input {
+            flex: 1;
+        }
+        
+        /* === Pages === */
+        #login-page, #register-page, #browse-page, #matches-page, #conversation-page, #profile-page {
+            display: none;
+        }
+        
+        /* Initial page */
+        #login-page {
+            display: block;
+        }
+        
+        /* === Utility Classes === */
+        .text-center {
+            text-align: center;
+        }
+        
+        .mt-3 {
+            margin-top: 15px;
+        }
+        
+        .mb-3 {
+            margin-bottom: 15px;
+        }
+        
+        .d-flex {
+            display: flex;
+        }
+        
+        .justify-content-between {
+            justify-content: space-between;
+        }
+        
+        .interests-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin-top: 10px;
+        }
+        
+        .interest-tag {
+            background-color: #e9ecef;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 14px;
+        }
+        
+        /* === Responsive Design === */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .col {
+                flex: 100%;
+            }
+            
+            .profile-card {
+                height: 400px;
+            }
+        }
+        
+        /* === Match animation === */
+        .match-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0,0,0,0.8);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            color: white;
+            display: none;
+        }
+        
+        .match-animation {
+            font-size: 48px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #ff4081;
+            animation: pulse 1.5s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        .match-photos {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .match-photo-container {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 3px solid #ff4081;
+        }
+        
+        .match-photo-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav id="nav-bar">
+        <div class="nav-container">
+            <div class="logo">
+                <i class="fas fa-heart"></i> Match Finder
+            </div>
+            <div class="nav-links" id="nav-links">
+                <a href="#" data-page="browse-page" class="nav-link">Browse</a>
+                <a href="#" data-page="matches-page" class="nav-link">Matches</a>
+                <a href="#" data-page="profile-page" class="nav-link">Profile</a>
+            </div>
+            <div class="user-nav" id="user-nav">
+                <div class="notification-badge" id="notification-badge">
+                    <i class="fas fa-bell"></i>
+                    <span class="badge" id="notification-count">0</span>
+                </div>
+                <button id="logout-button">Logout</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Login Page -->
+    <div id="login-page" class="container">
+        <div class="row">
+            <div class="col"></div>
+            <div class="col">
+                <div class="card mt-3">
+                    <div class="card-header">Login</div>
+                    <div class="card-body">
+                        <form id="login-form">
+                            <div class="form-group">
+                                <label for="login-username">Username or Email</label>
+                                <input type="text" id="login-username" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="login-password">Password</label>
+                                <input type="password" id="login-password" required>
+                            </div>
+                            <button type="submit">Login</button>
+                        </form>
+                    </div>
+                    <div class="card-footer text-center">
+                        Don't have an account? <a href="#" id="show-register">Register</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col"></div>
+        </div>
+    </div>
+
+    <!-- Register Page -->
+    <div id="register-page" class="container">
+        <div class="row">
+            <div class="col"></div>
+            <div class="col">
+                <div class="card mt-3">
+                    <div class="card-header">Register</div>
+                    <div class="card-body">
+                        <form id="register-form">
+                            <div class="form-group">
+                                <label for="register-username">Username</label>
+                                <input type="text" id="register-username" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="register-email">Email</label>
+                                <input type="email" id="register-email" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="register-password">Password</label>
+                                <input type="password" id="register-password" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="register-password-confirm">Confirm Password</label>
+                                <input type="password" id="register-password-confirm" required>
+                            </div>
+                            <button type="submit">Register</button>
+                        </form>
+                    </div>
+                    <div class="card-footer text-center">
+                        Already have an account? <a href="#" id="show-login">Login</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col"></div>
+        </div>
+    </div>
+
+    <!-- Create Profile Page -->
+    <div id="create-profile-page" class="container">
+        <div class="row">
+            <div class="col"></div>
+            <div class="col">
+                <div class="card mt-3">
+                    <div class="card-header">Create Profile</div>
+                    <div class="card-body">
+                        <form id="create-profile-form">
+                            <div class="form-group">
+                                <label for="profile-name">Full Name</label>
+                                <input type="text" id="profile-name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="profile-age">Age</label>
+                                <input type="number" id="profile-age" min="18" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="profile-gender">Gender</label>
+                                <select id="profile-gender" required>
+                                    <option value="">Select Gender</option>
+                                    <option value="male">Male</option>
+                                    <option value="female">Female</option>
+                                    <option value="non-binary">Non-binary</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="profile-location">Location</label>
+                                <input type="text" id="profile-location" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="profile-bio">Bio</label>
+                                <textarea id="profile-bio" rows="4"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="profile-interests">Interests (comma separated)</label>
+                                <input type="text" id="profile-interests">
+                            </div>
+                            <div class="form-group">
+                                <label for="profile-photo">Profile Photo URL</label>
+                                <input type="url" id="profile-photo">
+                            </div>
+                            <h3 class="mb-3">Preferences</h3>
+                            <div class="form-group">
+                                <label for="pref-age-min">Minimum Age</label>
+                                <input type="number" id="pref-age-min" min="18" value="18">
+                            </div>
+                            <div class="form-group">
+                                <label for="pref-age-max">Maximum Age</label>
+                                <input type="number" id="pref-age-max" min="18" value="99">
+                            </div>
+                            <div class="form-group">
+                                <label for="pref-distance">Maximum Distance (miles)</label>
+                                <input type="number" id="pref-distance" min="1" value="50">
+                            </div>
+                            <div class="form-group">
+                                <label>Gender Preferences</label>
+                                <div class="form-check">
+                                    <input type="checkbox" id="pref-gender-male" value="male">
+                                    <label for="pref-gender-male">Male</label>
+                                </div>
+                                <div class="form-check">
+                                    <input type="checkbox" id="pref-gender-female" value="female">
+                                    <label for="pref-gender-female">Female</label>
+                                </div>
+                                <div class="form-check">
+                                    <input type="checkbox" id="pref-gender-non-binary" value="non-binary">
+                                    <label for="pref-gender-non-binary">Non-binary</label>
+                                </div>
+                                <div class="form-check">
+                                    <input type="checkbox" id="pref-gender-other" value="other">
+                                    <label for="pref-gender-other">Other</label>
+                                </div>
+                            </div>
+                            <button type="submit">Create Profile</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col"></div>
+        </div>
+    </div>
+
+    <!-- Browse Page -->
+    <div id="browse-page" class="container">
+        <div class="row">
+            <div class="col"></div>
+            <div class="col">
+                <div id="profile-browser">
+                    <!-- Profile cards will be inserted here -->
+                    <div class="card text-center" id="no-profiles-card" style="display: none;">
+                        <div class="card-body">
+                            <h3>No more profiles</h3>
+                            <p>Try adjusting your preferences or check back later.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col"></div>
+        </div>
+    </div>
+
+    <!-- Matches Page -->
+    <div id="matches-page" class="container">
+        <div class="card">
+            <div class="card-header">
+                Your Matches
+            </div>
+            <div id="matches-list">
+                <!-- Match items will be inserted here -->
+                <div id="no-matches-message" class="card-body text-center" style="display: none;">
+                    <p>You don't have any matches yet. Keep swiping!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Conversation Page -->
+    <div id="conversation-page" class="container">
+        <div class="card">
+            <div class="card-header" id="conversation-header">
+                <!-- Match name will be inserted here -->
+                <button class="secondary" id="back-to-matches">Back</button>
+            </div>
+            <div class="conversation" id="conversation-messages">
+                <!-- Messages will be inserted here -->
+            </div>
+            <div class="message-form">
+                <input type="text" class="message-input" id="message-input" placeholder="Type a message...">
+                <button id="send-message-btn">Send</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Profile Page -->
+    <div id="profile-page" class="container">
+        <div class="row">
+            <div class="col"></div>
+            <div class="col">
+                <div class="card">
+                    <div class="card-header">Your Profile</div>
+                    <div class="card-body" id="profile-details">
+                        <!-- Profile details will be inserted here -->
+                    </div>
+                    <div class="card-footer">
+                        <button id="edit-profile-btn">Edit Profile</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col"></div>
+        </div>
+    </div>
+
+    <!-- Match Overlay -->
+    <div class="match-overlay" id="match-overlay">
+        <div class="match-animation">It's a Match!</div>
+        <div class="match-photos" id="match-photos">
+            <!-- Match photos will be inserted here -->
+        </div>
+        <p>You and <span id="match-name"></span> liked each other</p>
+        <div class="mt-3">
+            <button id="send-message-match">Send a Message</button>
+            <button class="secondary" id="keep-browsing">Keep Browsing</button>
+        </div>
+    </div>
+
+    <!-- Font Awesome Icons -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"></script>
+
+    <script>
+        // Data storage in localStorage
+        const DB_KEYS = {
+            USERS: 'dating_app_users',
+            PROFILES: 'dating_app_profiles',
+            MATCHES: 'dating_app_matches',
+            MESSAGES: 'dating_app_messages',
+            LIKES: 'dating_app_likes',
+            CURRENT_USER: 'dating_app_current_user'
+        };
+
+        // Initialize database
+        function initializeDB() {
+            for (const key of Object.values(DB_KEYS)) {
+                if (!localStorage.getItem(key)) {
+                    localStorage.setItem(key, JSON.stringify([]));
+                }
+            }
+        }
+
+        // Get/Set data
+        function getData(key) {
+            return JSON.parse(localStorage.getItem(key)) || [];
+        }
+
+        function setData(key, data) {
+            localStorage.setItem(key, JSON.stringify(data));
+        }
+
+        // Authentication functions
+        function registerUser(username, email, password) {
+            const users = getData(DB_KEYS.USERS);
+            
+            // Check if username or email already exists
+            if (users.find(u => u.username === username)) {
+                throw new Error('Username already exists');
+            }
+            if (users.find(u => u.email === email)) {
+                throw new Error('Email already exists');
+            }
+            
+            // Validate inputs
+            if (!validateUsername(username)) {
+                throw new Error('Username must be 3-20 characters and include only letters, numbers, and underscores');
+            }
+            if (!validateEmail(email)) {
+                throw new Error('Invalid email format');
+            }
+            if (!validatePassword(password)) {
+                throw new Error('Password must be at least 8 characters with uppercase, lowercase, number, and special character');
+            }
+            
+            // Create user object
+            const user = {
+                id: generateId(),
+                username,
+                email,
+                passwordHash: hashPassword(password),
+                createdAt: new Date().toISOString(),
+                lastLogin: new Date().toISOString(),
+                isActive: true
+            };
+            
+            users.push(user);
+            setData(DB_KEYS.USERS, users);
+            
+            return user;
+        }
+
+        function login(usernameOrEmail, password) {
+            const users = getData(DB_KEYS.USERS);
+            
+            // Find user by username or email
+            const user = users.find(u => 
+                u.username === usernameOrEmail || u.email === usernameOrEmail
+            );
+            
+            if (!user) {
+                return null;
+            }
+            
+            // Verify password
+            if (!verifyPassword(password, user.passwordHash)) {
+                return null;
+            }
+            
+            // Update last login
+            user.lastLogin = new Date().toISOString();
+            setData(DB_KEYS.USERS, users);
+            
+            // Set current user
+            setData(DB_KEYS.CURRENT_USER, user);
+            
+            return user;
+        }
+
+        function logout() {
+            localStorage.removeItem(DB_KEYS.CURRENT_USER);
+        }
+
+        function getCurrentUser() {
+            return getData(DB_KEYS.CURRENT_USER);
+        }
+
+        // Validation functions
+        function validateUsername(username) {
+            const pattern = /^[a-zA-Z0-9_]{3,20}$/;
+            return pattern.test(username);
+        }
+
+        function validateEmail(email) {
+            const pattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+            return pattern.test(email);
+        }
+
+        function validatePassword(password) {
+            if (password.length < 8) return false;
+            if (!/[A-Z]/.test(password)) return false;
+            if (!/[a-z]/.test(password)) return false;
+            if (!/[0-9]/.test(password)) return false;
+            if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) return false;
+            return true;
+        }
+
+        // Password hashing (simple for demo)
+        function hashPassword(password) {
+            // This is a dummy implementation
+            // In real app, use a proper hashing lib
+            return btoa(password) + '.' + Date.now();
+        }
+
+        function verifyPassword(password, hash) {
+            // This is a dummy implementation
+            // In real app, use a proper verification
+            return hash.startsWith(btoa(password));
+        }
+
+        // Profile functions
+        function createProfile(userId, name, age, gender, location, bio = "", interests = [], photos = [], preferences = {}) {
+            if (age < 18) {
+                throw new Error('Users must be at least 18 years old');
+            }
+            
+            const validGenders = ['male', 'female', 'non-binary', 'other'];
+            if (!validGenders.includes(gender)) {
+                throw new Error('Invalid gender');
+            }
+            
+            const profile = {
+                userId,
+                name,
+                age,
+                gender,
+                location,
+                bio,
+                interests: interests || [],
+                photos: photos || [],
+                preferences: preferences || {
+                    ageMin: 18,
+                    ageMax: 99,
+                    distance: 50,
+                    genderPreferences: []
+                },
+                createdAt: new Date().toISOString(),
+                lastUpdated: new Date().toISOString()
+            };
+            
+            const profiles = getData(DB_KEYS.PROFILES);
+            profiles.push(profile);
+            setData(DB_KEYS.PROFILES, profiles);
+            
+            return profile;
+        }
+
+        function getProfileByUserId(userId) {
+            const profiles = getData(DB_KEYS.PROFILES);
+            return profiles.find(p => p.userId === userId);
+        }
+
+        function updateProfile(userId, updates) {
+            const profiles = getData(DB_KEYS.PROFILES);
+            const index = profiles.findIndex(p => p.userId === userId);
+            
+            if (index === -1) {
+                return null;
+            }
+            
+            profiles[index] = {
+                ...profiles[index],
+                ...updates,
+                lastUpdated: new Date().toISOString()
+            };
+            
+            setData(DB_KEYS.PROFILES, profiles);
+            return profiles[index];
+        }
+
+        // Matching functions
+        function likeProfile(likerId, likedId) {
+            const likes = getData(DB_KEYS.LIKES);
+            
+            // Check if already liked
+            if (likes.find(l => l.likerId === likerId && l.likedId === likedId)) {
+                return null;
+            }
+            
+            // Add the like
+            const like = {
+                id: generateId(),
+                likerId,
+                likedId,
+                createdAt: new Date().toISOString()
+            };
+            
+            likes.push(like);
+            setData(DB_KEYS.LIKES, likes);
+            
+            // Check for mutual like
+            const mutualLike = likes.find(l => l.likerId === likedId && l.likedId === likerId);
+            
+            if (mutualLike) {
+                // Create a match
+                const matches = getData(DB_KEYS.MATCHES);
+                const match = {
+                    id: generateId(),
+                    user1Id: likerId,
+                    user2Id: likedId,
+                    createdAt: new Date().toISOString(),
+                    lastInteraction: new Date().toISOString(),
+                    isActive: true
+                };
+                
+                matches.push(match);
+                setData(DB_KEYS.MATCHES, matches);
+                
+                return match;
+            }
+            
+            return null;
+        }
+
+        function getPotentialMatches(userId, limit = 10) {
+            const currentUserProfile = getProfileByUserId(userId);
+            if (!currentUserProfile) return [];
+            
+            const profiles = getData(DB_KEYS.PROFILES);
+            const likes = getData(DB_KEYS.LIKES);
+            const matches = getData(DB_KEYS.
